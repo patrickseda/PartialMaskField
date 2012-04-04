@@ -11,10 +11,10 @@
     <id>com.zombo.partialmaskfield</id>
     <name>PartialMaskField</name>
     <version>1.0</version>
-    <publisher>pseda</publisher>
+    <publisher>patrickseda</publisher>
     <url>http://</url>
-    <description>not specified</description>
-    <copyright>2012 by pseda</copyright>
+    <description>Provides the ability to have partial password masking on a Titanium TextField.</description>
+    <copyright>2012 by patrickseda</copyright>
     <icon>appicon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
@@ -23,10 +23,12 @@
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
     <analytics>true</analytics>
-    <guid>7a0613dd-903c-447c-9125-5d65b94f2c63</guid>
+    <guid>57668755-d2f8-4d3e-a487-6d233e8528b8</guid>
     <iphone>
         <orientations device="iphone">
             <orientation>Ti.UI.PORTRAIT</orientation>
+            <orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
+            <orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
         </orientations>
         <orientations device="ipad">
             <orientation>Ti.UI.PORTRAIT</orientation>

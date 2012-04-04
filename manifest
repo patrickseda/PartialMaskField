@@ -1,8 +1,8 @@
-#appname: PartialMaskField
-#publisher: pseda
-#url: http://
-#image: appicon.png
-#appid: com.zombo.partialmaskfield
-#desc: undefined
-#type: ipad
-#guid: 7a0613dd-903c-447c-9125-5d65b94f2c63
+#appname:PartialMaskField
+#publisher:patrickseda
+#url:http://
+#image:appicon.png
+#appid:com.zombo.partialmaskfield
+#desc:Provides the ability to have partial password masking on a Titanium TextField.
+#type:ipad
+#guid:57668755-d2f8-4d3e-a487-6d233e8528b8
