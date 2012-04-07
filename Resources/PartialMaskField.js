@@ -5,7 +5,7 @@
  * A position range is specified for which section of characters remains unmasked.
  * 
  * This module does NOT support partial masking for Android, as described below.
- * The behavior will mimic a fully masked TextField, with passwordMask:true.
+ * (The behavior will mimic a fully masked TextField, with passwordMask:true)
  *
  * Sample usage:
  *     // Create a normal TextField in your app.
@@ -22,10 +22,10 @@
  *     var PartialMaskField = require('PartialMaskField').PartialMaskField;
  *     var ssnField = new PartialMaskField(textField, 5, 4);
  * 
- *     // At any time you can ask for the actual value.
+ *     // At any time you can ask for the actual value. (Don't EVER use textField.value!)
  *     var ssn = ssnField.value();
  * 
- *     // Populate the field programmatically. (Don't use textField.value!)
+ *     // Populate the field programmatically. (Don't EVER use textField.value!)
  *     ssnField.force('123456789');
  *
  * @author Patrick Seda
@@ -52,7 +52,27 @@ exports.PartialMaskField = function(textField, startPos, numShowing) {
 	var startUnmasked = (startPos > 0) ? startPos : 0;
 	var numUnmasked = (numShowing > 0) ? numShowing : 0;
 	var actualValue = '';
-
+	
+	var setMaskedValue = function(showLastChar) {
+		var maskedValue = '';
+		var showLast = (showLastChar === true) || false;
+		for (var i = 0, len = actualValue.length; i < len; i++) {
+			if (((i >= startUnmasked) && (i < (startUnmasked + numUnmasked))) || (showLast && (i === len-1))) {
+				maskedValue += actualValue.charAt(i);
+			} else {
+				maskedValue += '\u2022';
+			}
+		}
+		textField.value = maskedValue;
+	};
+	
+	var finalMaskTimer = null;
+	var killTimer = function() {
+		if (finalMaskTimer) {
+			clearTimeout(finalMaskTimer);
+			finalMaskTimer = null;
+		}
+	}
 	var handleChangeEvent = function(e) {
 		if (!supportedByThisPlatform) {
 			actualValue = textField.value;
@@ -62,28 +82,34 @@ exports.PartialMaskField = function(textField, startPos, numShowing) {
 		if (newLen === actualValue.length) {
 			// Ignore transient events.
 			return;
-		} else if (newLen > actualValue.length) {
-			// Character was added.
+		}
+		
+		killTimer();
+		if (newLen > actualValue.length) {
+			// A character was added.
 			actualValue += textField.value.charAt(newLen - 1);
+			
+			// Show the last character as unmasked.
+			setMaskedValue(true);
+			
+			// Create a timer so the last character will eventually get masked.
+			finalMaskTimer = setTimeout(function() {
+				setMaskedValue();
+				finalMaskTimer = null;
+			}, 2000);
 		} else {
-			// Character was removed.
+			// A character was removed.
 			actualValue = actualValue.substr(0, newLen);
+			setMaskedValue();
 		}
-		setMaskedValue();
 	};
-	textField.addEventListener('change', handleChangeEvent);
 	
-	var setMaskedValue = function() {
-		var maskedValue = '';
-		for (var i = 0, len = actualValue.length; i < len; i++) {
-			if ((i >= startUnmasked) && (i < (startUnmasked + numUnmasked))) {
-				maskedValue += actualValue.charAt(i);
-			} else {
-				maskedValue += '\u2022';
-			}
-		}
-		textField.value = maskedValue;
-	}
+	// Register event handlers.
+	textField.addEventListener('change', handleChangeEvent);
+	textField.addEventListener('blur', function() {
+		killTimer();
+		setMaskedValue();
+	});
 	
 	// Override the TextField value and apply masking.
 	var force = function(newValue) {
