@@ -60,7 +60,7 @@ exports.PartialMaskField = function(textField, startPos, numShowing) {
 			if (((i >= startUnmasked) && (i < (startUnmasked + numUnmasked))) || (showLast && (i === len-1))) {
 				maskedValue += actualValue.charAt(i);
 			} else {
-				maskedValue += '\u2022';
+				maskedValue += '\u25CF';
 			}
 		}
 		textField.value = maskedValue;
