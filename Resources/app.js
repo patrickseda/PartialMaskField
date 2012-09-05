@@ -8,18 +8,18 @@ var win = Ti.UI.createWindow({
 
 var label1 = Ti.UI.createLabel({
 	left : 20, right : 20, top : 20, height : 25,
-	color : '#000', text : 'Partially Masked TextField:'
+	color : '#444', text : 'Partially Masked TextField:'
 });
 var textField = Ti.UI.createTextField({
 	left : 30, right : 20, top : 0, height : 40,
 	backgroundColor : '#fff', color : '#000',
-	hintText : 'Secret Input',
+	hintText : 'password',
 	borderStyle : Ti.UI.INPUT_BORDERSTYLE_ROUNDED
 });
 
 var label2 = Ti.UI.createLabel({
 	left : 20, right : 20, top : 30, height : 25,
-	color : '#000', text : '(Actual value)'
+	color : '#444', text : '(Value behind mask)'
 });
 var mirrorLabel = Ti.UI.createLabel({
 	left : 30, right : 20, top : 0, height : 30,
@@ -27,8 +27,8 @@ var mirrorLabel = Ti.UI.createLabel({
 });
 
 var button = Ti.UI.createButton({
-	left : 60, right : 60, top : 80, height : 40,
-	title : 'Force Populate'
+	left : 50, right : 50, top : 80, height : 40,
+	title : 'Try This: Force Populate'
 });
 button.addEventListener('click', function(e) {
 	// Programmatically set the value.

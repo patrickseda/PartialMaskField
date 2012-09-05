@@ -38,16 +38,29 @@
  * be expected). This screws with the ability to perform dynamic TextField
  * updates within this module.
  * But, there is a feature request in for this functionality under TIMOB-6006.
+ * 
+ * UPDATE (5 Sept 2012): This functionality has been introduced in Titanium SDK 2.1.2
+ * and this module has been modifed to work correctly using 2.1.2 and newer.
  */
-var supportedByThisPlatform = (Ti.Platform.osname !== 'android');
+var isAndroid = Ti.Platform.osname === 'android';
+var isSupported = true;
+
+// Not supported on Android before Titanium 2.1.2.
+if (isAndroid) {
+	var tiVersion = Ti.version.split('.');
+	var primary = parseInt(tiVersion[0], 10);
+	var secondary = parseInt(tiVersion[1], 10);
+	var tertiary = (tiVersion[2] !== undefined) ? parseInt(tiVersion[2], 10) : null;
+	if ((primary < 2) ||
+		((primary === 2) && (secondary < 1)) ||
+		((primary === 2) && (secondary === 1) && (tertiary !== null) && (tertiary < 2))) {
+		isSupported = false;
+	}
+}
 
 exports.PartialMaskField = function(textField, startPos, numShowing) {
 	// Ensure the native masking is in the proper state.
-	if (supportedByThisPlatform) {
-		textField.passwordMask = false;
-	} else {
-		textField.passwordMask = true;
-	}
+	textField.passwordMask = !isSupported;
 
 	var startUnmasked = (startPos > 0) ? startPos : 0;
 	var numUnmasked = (numShowing > 0) ? numShowing : 0;
@@ -64,6 +77,9 @@ exports.PartialMaskField = function(textField, startPos, numShowing) {
 			}
 		}
 		textField.value = maskedValue;
+		
+		// Manually move the cursor on Android.
+		isAndroid && isSupported && textField.setSelection(actualValue.length, actualValue.length);
 	};
 	
 	var finalMaskTimer = null;
@@ -74,7 +90,7 @@ exports.PartialMaskField = function(textField, startPos, numShowing) {
 		}
 	}
 	var handleChangeEvent = function(e) {
-		if (!supportedByThisPlatform) {
+		if (!isSupported) {
 			actualValue = textField.value;
 			return;
 		}
@@ -115,7 +131,7 @@ exports.PartialMaskField = function(textField, startPos, numShowing) {
 	var force = function(newValue) {
 		actualValue = newValue ? ('' + newValue) : '';
 		setMaskedValue();
-		if (supportedByThisPlatform) {
+		if (isSupported) {
 			setMaskedValue();
 		} else {
 			textField.value = actualValue;
